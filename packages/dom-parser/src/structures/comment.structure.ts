@@ -1,5 +1,4 @@
-import { NodeTypeEnum } from "src/enums";
-import { Node } from "./node";
+import { Node, NodeTypeEnum } from "./node.structure";
 
 export class Comment extends Node {
     get nodeName() {
