@@ -4,13 +4,10 @@ export interface IAttribute {
 }
 
 export class NamedNodeMap {
-    #_length: number = 0;
-    #_attributes: { [key: string]: IAttribute } = {};
-
-    [index: number]: IAttribute;
+    #_items: IAttribute[] = [];
 
     get length() {
-        return this.#_length;
+        return this.#_items.length;
     }
 
     get [Symbol.toStringTag]() {
@@ -18,31 +15,46 @@ export class NamedNodeMap {
     }
 
     item(index: number): IAttribute | null {
-        return index >= 0 && this[index] ? this[index] : null;
+        return index >= 0 && this.#_items[index] ? this.#_items[index] : null;
     }
 
     getNamedItem(name: string): IAttribute | null {
-        return this.#_attributes[name] || null;
+        return this.#_items.find(item => item.name === name) || null;
     }
 
-    setNamedItem(attr: IAttribute): IAttribute | null {
-        Object.assign(this.#_attributes, { [attr.name]: attr });
-        return attr;
+    setNamedItem(item: IAttribute): IAttribute | null {
+        if (!item.name || !this.#_isValidName(item.name)) return null;
+
+        const index = this.#_items.findIndex(itm => itm.name === item.name);
+        const toBeReplaced = this.item(index);
+
+        if (!!toBeReplaced) {
+            this.#_items.splice(index, 1, item);
+        } else {
+            this.#_items.push(item);
+        }
+
+        return toBeReplaced;
     }
 
     removeNamedItem(name: string): IAttribute | null {
-        const item = this.getNamedItem(name);
+        const index = this.#_items.findIndex(item => item.name === name);
+        const toBeRemoved = this.item(index);
 
-        if (!!item) {
-            delete this.#_attributes[item.name];
+        if (!!toBeRemoved) {
+            this.#_items.splice(index, 1);
         }
 
-        return item;
+        return toBeRemoved;
+    }
+
+    #_isValidName(name: string) {
+        return !!name && (Number.isNaN(Number.parseFloat(name)) || name.includes("."));
     }
 
     *[Symbol.iterator](): IterableIterator<IAttribute> {
-        for (let index = 0, max = this.length; index < max; index++) {
-            yield this[index];
+        for (const item of this.#_items) {
+            yield item;
         }
     }
 }
