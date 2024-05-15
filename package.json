@@ -1,0 +1,27 @@
+{
+    "name": "@rxdom/monorepo",
+    "private": true,
+    "packageManager": "npm@10.1.0",
+    "engines": {
+        "node": ">=20"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "turbo build",
+        "lint": "npm run lint:ts",
+        "lint:ts": "eslint */**/*.{ts,tsx,vue} --fix",
+        "test:e2e": "turbo test:e2e",
+        "test:unit": "turbo test:unit"
+    },
+    "devDependencies": {
+        "@antfu/eslint-config": "^2.18.0",
+        "@types/node": "^20.12.12",
+        "eslint": "^8.57.0",
+        "eslint-plugin-format": "^0.1.1",
+        "eslint-plugin-perfectionist": "^2.10.0",
+        "turbo": "latest",
+        "typescript": "^5.4.5"
+    }
+}
