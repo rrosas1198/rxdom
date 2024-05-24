@@ -4,6 +4,7 @@ import { DOMException } from "src/exceptions";
 import { Node, NodeTypeEnum } from "../node";
 import { Text } from "../text";
 import { NamedNodeMap } from "./element.structures";
+import { NamespaceURIEnum } from "./element.enums";
 
 const SELF_CLOSING_TAG_REGEX = /^(AREA|META|BASE|BR|COL|EMBED|HR|IMG|INPUT|LINK|PARAM|SOURCE|TRACK|WBR|COMMAND|KEYGEN|MENUITEM|DOCTYPE|!DOCTYPE)$/i;
 
@@ -11,7 +12,7 @@ export class Element extends Node {
     #_tagName: string;
     #_children: Element[] = [];
     #_attributes = new NamedNodeMap();
-    #_namespaceURI: string | null = null;
+    #_namespaceURI: NamespaceURIEnum | null = null;
 
     constructor(tagName: string) {
         super();
@@ -53,7 +54,11 @@ export class Element extends Node {
     }
 
     get namespaceURI() {
-        return this.#_namespaceURI;
+        return this.#_namespaceURI!;
+    }
+
+    set namespaceURI(value: NamespaceURIEnum) {
+        this.#_namespaceURI = value;
     }
 
     get children() {
