@@ -1,11 +1,5 @@
 import { DOMException } from "src/exceptions";
-
-export enum NodeTypeEnum {
-    ELEMENT_NODE = 1,
-    TEXT_NODE = 3,
-    COMMENT_NODE = 8,
-    DOCUMENT_FRAGMENT_NODE = 11
-}
+import { NodeTypeEnum } from "./node.enums";
 
 export class Node {
     static readonly ELEMENT_NODE = NodeTypeEnum.ELEMENT_NODE;

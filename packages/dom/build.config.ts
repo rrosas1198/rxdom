@@ -9,6 +9,7 @@ export default defineBuildConfig({
     },
     rollup: {
         emitCJS: true,
-        esbuild: { target: "es2018" }
+        esbuild: { target: "es2020" },
+        output: { inlineDynamicImports: true }
     }
 });

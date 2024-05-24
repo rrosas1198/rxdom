@@ -1,9 +1,9 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable regexp/no-unused-capturing-group */
 import { DOMException } from "src/exceptions";
-import { NamedNodeMap } from "./named-node-map.structure";
-import { Node, NodeTypeEnum } from "./node.structure";
-import { Text } from "./text.structure";
+import { Node, NodeTypeEnum } from "../node";
+import { Text } from "../text";
+import { NamedNodeMap } from "./element.structures";
 
 const SELF_CLOSING_TAG_REGEX = /^(AREA|META|BASE|BR|COL|EMBED|HR|IMG|INPUT|LINK|PARAM|SOURCE|TRACK|WBR|COMMAND|KEYGEN|MENUITEM|DOCTYPE|!DOCTYPE)$/i;
 

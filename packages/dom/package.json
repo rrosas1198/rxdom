@@ -1,7 +1,7 @@
 {
-    "name": "@rxdom/dom-parser",
+    "name": "@rxdom/dom",
     "version": "0.0.1",
-    "description": "A lightweight, fast, and flexible HTML string to DOM parser.",
+    "description": "A lightweight, fast, and flexible DOM implementation",
     "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",

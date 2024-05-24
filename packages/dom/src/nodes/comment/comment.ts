@@ -1,4 +1,4 @@
-import { Node, NodeTypeEnum } from "./node.structure";
+import { Node, NodeTypeEnum } from "../node";
 
 export class Comment extends Node {
     constructor(content: string = "") {
