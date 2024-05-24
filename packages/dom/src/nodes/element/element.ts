@@ -1,10 +1,9 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable regexp/no-unused-capturing-group */
-import { DOMException } from "src/exceptions";
 import { Node, NodeTypeEnum } from "../node";
-import { Text } from "../text";
 import { NamedNodeMap } from "./element.structures";
 import { NamespaceURIEnum } from "./element.enums";
+import { ElementUtils } from "./element.utils";
 
 const SELF_CLOSING_TAG_REGEX = /^(AREA|META|BASE|BR|COL|EMBED|HR|IMG|INPUT|LINK|PARAM|SOURCE|TRACK|WBR|COMMAND|KEYGEN|MENUITEM|DOCTYPE|!DOCTYPE)$/i;
 
@@ -46,7 +45,7 @@ export class Element extends Node {
     set textContent(content: string) {
         this.childNodes.forEach(child => this.removeChild(child));
         this.children.forEach(child => this.removeChild(child));
-        this.appendChild(new Text(content));
+        this.appendChild(this.ownerDocument.createTextNode(content));
     }
 
     get attributes() {
@@ -77,35 +76,12 @@ export class Element extends Node {
         this.#_attributes.setNamedItem({ name, value });
     }
 
-    appendChild(node: Node, validateAncestors?: boolean) {
-        if (!(node.nodeType === NodeTypeEnum.ELEMENT_NODE && !this.isSameNode(node))) {
-            return super.appendChild(node, validateAncestors);
-        }
-
-        if (validateAncestors && this._isAncestorOf(node, this)) {
-            throw new DOMException("Failed to execute 'appendChild' on 'Node': The new node is an ancestor of this node.");
-        }
-
-        if (node.parentNode) {
-            node.parentNode.removeChild(node);
-        }
-
-        this.appendChild(node, true);
-
-        return node;
+    appendChild(node: Node, validateAncestors?: boolean): Node {
+        return ElementUtils.appendChild(this, node, validateAncestors);
     }
 
-    removeChild(node: Node) {
-        if (node.nodeType === NodeTypeEnum.ELEMENT_NODE) {
-            const children = (node.parentNode as Element).#_children;
-            const index = children.indexOf(node as Element);
-
-            if (index >= 0) {
-                children.splice(index, 1);
-            }
-        }
-
-        return super.removeChild(node);
+    removeChild(node: Node): Node {
+        return ElementUtils.removeChild(this, node);
     }
 
     #_toStringNode(root: Node) {

@@ -1,5 +1,6 @@
-import { DOMException } from "src/exceptions";
+import { Document } from "../document";
 import { NodeTypeEnum } from "./node.enums";
+import { NodeUtils } from "./node.utils";
 
 export class Node {
     static readonly ELEMENT_NODE = NodeTypeEnum.ELEMENT_NODE;
@@ -10,9 +11,22 @@ export class Node {
     #_nodeType!: NodeTypeEnum;
     #_parentNode: Node | null = null;
     #_childNodes: Node[] = [];
+    #_ownerDocument: Document | null = null;
+
+    get ownerDocument() {
+        return this.#_ownerDocument!;
+    }
+
+    set ownerDocument(value: Document) {
+        this.#_ownerDocument = value;
+    }
 
     get parentNode() {
-        return this.#_parentNode;
+        return this.#_parentNode!;
+    }
+
+    set parentNode(node: Node) {
+        this.#_parentNode = node;
     }
 
     get nodeName() {
@@ -50,41 +64,11 @@ export class Node {
     }
 
     appendChild(node: Node, validateAncestors?: boolean) {
-        if (this.isSameNode(node)) {
-            throw new DOMException("Failed to execute 'appendChild' on 'Node': The new child element contains the parent.");
-        }
-
-        if (validateAncestors && this._isAncestorOf(node, this)) {
-            throw new DOMException("Failed to execute 'appendChild' on 'Node': The new node is an ancestor of this node.");
-        }
-
-        if (node.nodeType === NodeTypeEnum.DOCUMENT_FRAGMENT_NODE) {
-            for (const child of node.#_childNodes.slice()) {
-                this.appendChild(child);
-            }
-            return node;
-        }
-
-        if (node.parentNode) {
-            node.parentNode.removeChild(node);
-        }
-
-        node.#_parentNode = this;
-        this.#_childNodes.push(node);
-
-        return node;
+        return NodeUtils.appendChild(this, node, validateAncestors);
     }
 
     removeChild(node: Node) {
-        const index = this.#_childNodes.indexOf(node);
-
-        if (index < 0) {
-            throw new DOMException("Failed to remove node. Node is not child of parent.");
-        }
-
-        this.#_childNodes.splice(index, 1);
-
-        return node;
+        return NodeUtils.removeChild(this, node);
     }
 
     hasChildNodes() {
@@ -97,30 +81,5 @@ export class Node {
 
     toString() {
         return `[object ${this.constructor.name}]`;
-    }
-
-    _isAncestorOf(ancestorNode: Node | null, referenceNode: Node | null) {
-        if (!ancestorNode || !referenceNode) {
-            return false;
-        }
-
-        if (ancestorNode === referenceNode) {
-            return true;
-        }
-
-        if (ancestorNode.childNodes.length < 0) {
-            return false;
-        }
-
-        let parent: Node | null = referenceNode.parentNode;
-
-        while (parent) {
-            if (ancestorNode === parent) {
-                return true;
-            }
-            parent = parent.parentNode;
-        }
-
-        return false;
     }
 }

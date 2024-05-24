@@ -1,19 +1,26 @@
 import { Comment } from "../comment";
+import { DocumentFragment } from "../document-fragment";
 import { Element, NamespaceURIEnum } from "../element";
 import { Node } from "../node";
 import { Text } from "../text";
 
 export class Document extends Node {
     createTextNode(content: string) {
-        return new Text(content);
+        const text = new Text(content);
+        text.ownerDocument = this;
+        return text;
     }
 
     createComment(content: string) {
-        return new Comment(content);
+        const comment = new Comment(content);
+        comment.ownerDocument = this;
+        return comment;
     }
 
     createDocumentFragment() {
-        throw new Error("Method not implemented.");
+        const documentFragment = new DocumentFragment();
+        documentFragment.ownerDocument = this;
+        return documentFragment;
     }
 
     createElement(name: string) {
@@ -22,6 +29,7 @@ export class Document extends Node {
 
     createElementNS(namespaceURI: NamespaceURIEnum, tagName: string) {
         const element = new Element(tagName);
+        element.ownerDocument = this;
         element.namespaceURI = namespaceURI;
         return element;
     }
