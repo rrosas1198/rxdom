@@ -55,9 +55,13 @@ export class Node {
         return this.constructor.name;
     }
 
-    appendChild(node: Node) {
+    appendChild(node: Node, validateAncestors?: boolean) {
         if (this.isSameNode(node)) {
-            throw new DOMException("Failed to execute 'appendChild' on 'Node': Not possible to append a node as a child of itself.");
+            throw new DOMException("Failed to execute 'appendChild' on 'Node': The new child element contains the parent.");
+        }
+
+        if (validateAncestors && this._isAncestorOf(node, this)) {
+            throw new DOMException("Failed to execute 'appendChild' on 'Node': The new node is an ancestor of this node.");
         }
 
         if (node.nodeType === NodeTypeEnum.DOCUMENT_FRAGMENT_NODE) {
@@ -68,13 +72,23 @@ export class Node {
         }
 
         if (node.parentNode) {
-            const index = node.parentNode.#_childNodes.indexOf(node);
-            if (index >= 0) {
-                node.parentNode.#_childNodes.splice(index, 1);
-            }
+            node.parentNode.removeChild(node);
         }
 
+        node.#_parentNode = this;
         this.#_childNodes.push(node);
+
+        return node;
+    }
+
+    removeChild(node: Node) {
+        const index = this.#_childNodes.indexOf(node);
+
+        if (index < 0) {
+            throw new DOMException("Failed to remove node. Node is not child of parent.");
+        }
+
+        this.#_childNodes.splice(index, 1);
 
         return node;
     }
@@ -89,5 +103,30 @@ export class Node {
 
     toString() {
         return `[object ${this.constructor.name}]`;
+    }
+
+    _isAncestorOf(ancestorNode: Node | null, referenceNode: Node | null) {
+        if (!ancestorNode || !referenceNode) {
+            return false;
+        }
+
+        if (ancestorNode === referenceNode) {
+            return true;
+        }
+
+        if (ancestorNode.childNodes.length < 0) {
+            return false;
+        }
+
+        let parent: Node | null = referenceNode.parentNode;
+
+        while (parent) {
+            if (ancestorNode === parent) {
+                return true;
+            }
+            parent = parent.parentNode;
+        }
+
+        return false;
     }
 }
