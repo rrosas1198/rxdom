@@ -1,7 +1,7 @@
 {
     "name": "@rxdom/monorepo",
     "private": true,
-    "packageManager": "npm@10.1.0",
+    "packageManager": "npm@10.8.2",
     "engines": {
         "node": ">=20"
     },
@@ -16,12 +16,12 @@
         "test:unit": "turbo test:unit"
     },
     "devDependencies": {
-        "@antfu/eslint-config": "^2.18.0",
-        "@types/node": "^20.12.12",
+        "@antfu/eslint-config": "~2.21.3",
+        "@types/node": "^20.14.10",
         "eslint": "^8.57.0",
-        "eslint-plugin-format": "^0.1.1",
-        "eslint-plugin-perfectionist": "^2.10.0",
+        "eslint-plugin-format": "^0.1.2",
+        "eslint-plugin-perfectionist": "^2.11.0",
         "turbo": "latest",
-        "typescript": "^5.4.5"
+        "typescript": "^5.5.3"
     }
 }

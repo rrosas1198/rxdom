@@ -2,6 +2,7 @@
     "recommendations": [
         "streetsidesoftware.code-spell-checker-spanish",
         "streetsidesoftware.code-spell-checker",
+        "editorconfig.editorconfig",
         "dbaeumer.vscode-eslint"
     ]
 }
